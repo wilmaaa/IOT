@@ -1,14 +1,37 @@
-import mysql.connector
-from Connector import mydb
+import upymysql
+import upymysql.cursors
 
-mycursor = mydb.cursor()
+mydb = mysql.connector.connect(
+    host= "cs2s.yorkdc.net",
+    user= "william.hill1",
+    password= "Ft3LQT7i6HFSFOrE",
+    database= "williamhill1_Sensor"
+)
 
-sql = "UPDATE Sensors SET Status = '0' WHERE Id = '2'"
-mycursor.execute(sql)
-mydb.commit()
-print(mycursor.rowcount, "record inserted.")
-sql = "INSERT INTO `Event log` (Sensor, ChangeMade) VALUES ('Guest room', 'Door Closed')"
-mycursor.execute(sql)
-mydb.commit()
-print(mycursor.rowcount, "record inserted.")
+connection = upymysql.connect(host='cs2s.yorkdc.net',
+                             user='william.hill1',
+                             password='Ft3LQT7i6HFSFOrE',
+                             db='williamhill1_Sensor',
+                             charset='utf8mb4',
+                             cursorclass=upymysql.cursors.DictCursor)
+
+try:
+
+     with connection.cursor() as cursor:
+        # updates door status too closed
+        sql = "UPDATE Sensors SET Status = '0' WHERE Id = '2'"
+
+    # connection is not autocommit by default. So you must commit to save
+    # your changes.
+    connection.commit()
+
+    with connection.cursor() as cursor:
+        # Updates the Update log
+        sql = "INSERT INTO `Event log` (Sensor, ChangeMade) VALUES ('Guest room', 'Door Closed')"
+    connection.commit()
+        
+finally:
+    connection.close()
+
+
       
